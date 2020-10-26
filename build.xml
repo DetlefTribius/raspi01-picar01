@@ -1,0 +1,58 @@
+<project name="Raspberry" default="dist" basedir=".">
+
+  <property file = "build.properties"/>
+  <property name="src.dir" location="src" />
+  <property name="test.dir" location="test" />
+  <property name="bin.dir" location="bin" />
+
+  <echo>Externen jars: ${lib.dir}</echo>
+  <echo>Jar-File: ${dist.dir}/${dist.name}.jar</echo> 
+
+  <path id="classpath">
+    <pathelement path="${lib.dir}/pi4j-core.jar"/>
+    <pathelement path="${lib.dir}/slf4j-api-1.7.30.jar"/>
+    <pathelement path="${lib.dir}/slf4j-simple-1.7.30.jar"/>
+  	<pathelement path="${lib.dir}/pihardware.jar"/>
+  	<pathelement path="${lib.dir}/junit-platform-console-standalone-1.6.1.jar"/>
+  </path>
+
+  <presetdef name="javac">
+    <javac includeantruntime="false" />
+  </presetdef>
+	
+  <target name="clean" description="remove intermediate files">
+    <echo> Clean ${bin.dir}/*... </echo>
+    <delete failonerror="false">
+      <fileset dir="${bin.dir}" includes="**/*"/>
+    </delete>
+    <delete file="${dist.dir}/${dist.name}.jar" />
+  </target>
+
+  <target name="prepare" depends="clean">
+  <!-- Create the time stamp -->
+    <tstamp />
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${bin.dir}" />
+  </target>
+
+  <target name="compile" depends="prepare" description="compile the Java source code to class files">
+    <javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="classpath" debug="on"/>
+  	<!--
+    <javac srcdir="${test.dir}" destdir="${bin.dir}" classpathref="classpath" debug="on"/>
+    -->
+    <echo>Kopieren der *.png-Files...</echo>
+    <copy todir="${bin.dir}">
+      <fileset dir="${src.dir}" includes="**/*.png"/>
+    </copy>
+    <echo>Kopieren der *.properties-Files...</echo>
+    <copy todir="${bin.dir}">
+      <fileset dir="${src.dir}" includes="**/*.properties"/>
+    </copy>
+  </target>
+
+  <target name="dist" depends="compile" description="Jar task...">
+    <jar jarfile="${dist.dir}/${dist.name}.jar" basedir="${bin.dir}"/>
+    <jar jarfile="${dist.dir}/${dist.name}-sources.jar" basedir="${src.dir}"/>
+  </target>
+
+</project>
