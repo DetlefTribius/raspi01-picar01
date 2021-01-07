@@ -26,6 +26,7 @@
       <fileset dir="${bin.dir}" includes="**/*"/>
     </delete>
     <delete file="${dist.dir}/${dist.name}.jar" />
+  	<delete file="${dist.dir}/${dist.name}-sources.jar" />  	
   </target>
 
   <target name="prepare" depends="clean">
